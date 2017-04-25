@@ -1,0 +1,115 @@
+[
+  {
+    "id": "1",
+    "text": "Components",
+    "iconCls": "fa fa-diamond"
+  },
+  {
+    "id": "1-1",
+    "text": "Tabs",
+    "url": "pages/tabs.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-2",
+    "text": "Panel",
+    "url": "pages/panel.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-3",
+    "text": "Layout",
+    "url": "pages/layout.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-4",
+    "text": "Label - Button - Tooltip ",
+    "url": "pages/label-button.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-5",
+    "text": "Window",
+    "url": "pages/window.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-6",
+    "text": "Accordion",
+    "url": "pages/accordion.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-7",
+    "text": "Grids",
+    "url": "pages/grid.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-8",
+    "text": "Form",
+    "url": "pages/form.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-9",
+    "text": "Tree",
+    "url": "pages/tree.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "1-10",
+    "text": "Colors",
+    "url": "pages/colors.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "1"
+  },
+  {
+    "id": "2",
+    "text": "Plugins",
+    "iconCls": "fa fa-plug"
+  },
+  {
+    "id": "2-1",
+    "text": "Full Calendar",
+    "url": "pages/schedule.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "2"
+  },
+  {
+    "id": "2-2",
+    "text": "Web Uploader",
+    "url": "pages/uploader.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "2"
+  },
+  {
+    "id": "3",
+    "text": "Data Tables",
+    "iconCls": "fa fa-briefcase"
+  },
+  {
+    "id": "3-1",
+    "text": "With Horizontal Form",
+    "url": "pages/datagrid.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "3"
+  },
+ {
+    "id": "3-2",
+    "text": "With Vertical Form",
+    "url": "pages/datagrid-form.html",
+    "iconCls": "fa fa-chevron-circle-right",
+    "parentId": "3"
+  }
+]

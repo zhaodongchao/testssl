@@ -1,0 +1,12 @@
+@charset "utf-8";
+/* CSS Document */
+.explain{ margin:10px;}
+.explain_title{ font-size:14px; margin-bottom: 10px;}
+.explain_h1{ font-size:14px; border-bottom:1px solid #333;}
+.explain_pre{ display:block; border:1px solid #ccc; margin:0 0 20px; background-color:#002b36; color:#ccc; padding:10px; overflow:auto;}
+.explain_pre code{ display:block; padding:10px; text-align:left;margin:0; line-height:150%;}
+
+.explain_pre .explain_comment{ color:#47FFAC; font-style:italic;}
+
+.explain_script{ color:#b58900;}
+.explain_css{ color:#C869FF;}

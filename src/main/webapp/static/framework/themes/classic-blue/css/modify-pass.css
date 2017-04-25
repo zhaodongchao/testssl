@@ -1,0 +1,17 @@
+.balance-bar{margin:  50px auto;width: 480px;overflow: hidden;}
+.balance-bar ul{margin: 10px 0;}
+.balance-bar ul li{float: left;text-align: center;font-size: 12px;color: #CCC;}
+.balance-bar ul li > div{width:160px;height: 6px;background: #CCC;position: relative;margin-bottom: 15px;}
+.balance-bar ul li > div span{width: 20px;height: 20px;border-radius: 10px;-webkit-border-radius:10px;-moz-border-radius:10px;position: absolute;background: #CCC;color: #FFF;text-align: center;left: 50%;margin-left: -10px;top: -7px;font-size: 12px;line-height: 20px;}
+.balance-bar ul li.progress-last > div,.balance-bar ul li.progress-last > div span{background: #d7e2fb;}
+.balance-bar ul li.progress-current > div,.balance-bar ul li.progress-current > div span{background: #0085d0;}
+.balance-bar ul li.progress-last{color: #d7e2fb;}
+.balance-bar ul li.progress-current{color: #0085d0;}
+.balance-bar ul li:first-child div{border-radius: 3px 0 0 3px;-moz-border-radius: 3px 0 0 3px;-webkit-border-radius: 3px 0 0 3px;}
+.balance-bar ul li:last-child div{border-radius: 0 3px 3px 0;-moz-border-radius: 0 3px 3px 0;-webkit-border-radius: 0 3px 3px 0;}
+.modify_pass_success{width: 260px;margin: 0 auto;}
+.modify_pass_success dl dt{width: 35px;height: 35px;float:left;background: url(../images/ok.png) no-repeat center;}
+.modify_pass_success dl dd{margin-left: 40px;color: #999;}
+.modify_pass_success dl dd h2{font-size: 18px;color: #0085d0;height: 35px;line-height: 35px;}
+.modify_pass_success dl dd p{margin-bottom: 10px;}
+

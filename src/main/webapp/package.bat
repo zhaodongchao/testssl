@@ -1,0 +1,1 @@
+jar cvf testssl.war *.*

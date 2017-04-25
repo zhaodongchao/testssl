@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	   xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+       default-lazy-init="true" >
+	<!-- 设置Spring自动注入要扫描的包 ,不扫描@Controller-->
+	<context:component-scan base-package="com.newtouch,com.security" >
+	</context:component-scan>
+	<!-- 隐式地向 Spring 容器注册 -->
+	<context:annotation-config />
+	<!-- 注解驱动,开启注解模式 -->
+	<mvc:annotation-driven />
+	<!-- 加载配置property文件 -->
+	<context:property-placeholder location="classpath:database_config.properties" />
+
+	<!-- c3p0数据库连接池 -->
+	<bean id="druidDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" >
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+        <property name="loginTimeout" value="${jdbc.timeout}"/>
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="10" />
+		<property name="minIdle" value="10" />
+		<property name="maxActive" value="20" />
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+
+		<property name="validationQuery" value="SELECT 1 from dual " />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="stat" />
+	</bean>
+
+	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="database" value="ORACLE"></property>
+	</bean>
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="druidDataSource"/>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+		<property name="packagesToScan" value="com.security"/>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- Spring Data Jpa配置 -->
+	<jpa:repositories base-package="com.security"  transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory"/>
+
+	<!-- Jpa 事务配置 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<!--<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="druidDataSource"></property>
+		<property name="hibernateProperties">
+			<value>
+				&lt;!&ndash; 设置数据库方言 &ndash;&gt;
+				hibernate.dialect=org.hibernate.dialect.OracleDialect
+				&lt;!&ndash; 设置自动创建|更新|验证数据库表结构 &ndash;&gt;
+				hibernate.hbm2ddl.auto=update
+				&lt;!&ndash; 是否在控制台显示sql &ndash;&gt;
+				hibernate.show_sql=true
+				&lt;!&ndash; 是否格式化sql，优化显示 &ndash;&gt;
+				hibernate.format_sql=true
+				&lt;!&ndash; 是否开启二级缓存 &ndash;&gt;
+				hibernate.cache.use_second_level_cache=false
+				&lt;!&ndash; 是否开启查询缓存 &ndash;&gt;
+				hibernate.cache.use_query_cache=false
+				&lt;!&ndash; 数据库批量查询最大数 &ndash;&gt;
+				hibernate.jdbc.fetch_size=50
+				&lt;!&ndash; 数据库批量更新、添加、删除操作最大数 &ndash;&gt;
+				hibernate.jdbc.batch_size=50
+				&lt;!&ndash; 是否自动提交事务 &ndash;&gt;
+				hibernate.connection.autocommit=true
+				&lt;!&ndash; 指定hibernate在何时释放JDBC连接 &ndash;&gt;
+				hibernate.connection.release_mode=auto
+				&lt;!&ndash; 创建session方式 hibernate4.x 的方式 org.springframework.orm.hibernate4.SpringSessionContext &ndash;&gt;
+				hibernate.current_session_context_class=org.springframework.orm.hibernate4.SpringSessionContext
+				&lt;!&ndash; javax.persistence.validation.mode默认情况下是auto的，就是说如果不设置的话它是会自动去你的classpath下面找一个bean-validation**包
+					所以把它设置为none即可 &ndash;&gt;
+				javax.persistence.validation.mode=none
+			</value>
+		</property>
+	</bean>
+	&lt;!&ndash; 配置事物 &ndash;&gt;
+	&lt;!&ndash;首先定义事物管理器 &ndash;&gt;
+	<bean id="hibernateTransactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	&lt;!&ndash; 定义切面 &ndash;&gt;
+	<tx:advice id="txAdvice" transaction-manager="hibernateTransactionManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="list*" propagation="REQUIRED" />
+			<tx:method name="find*" propagation="REQUIRED" />
+			<tx:method name="query*" propagation="REQUIRED" />
+			<tx:method name="validate*" propagation="REQUIRED" />
+			<tx:method name="export*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut expression="execution(* com.*.service..*.*(..))"
+			id="pointCuts" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointCuts" />
+	</aop:config>
+	<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+	<!--<import resource="classpath:activiti.cfg.xml" />-->
+
+	<!-- redis start-->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${jedis.maxTotal}" />
+		<property name="maxIdle" value="${jedis.maxIdle}" />
+		<property name="numTestsPerEvictionRun" value="${jedis.numTestsPerEvictionRun}"/>
+		<property name="timeBetweenEvictionRunsMillis" value="${jedis.timeBetweenEvictionRunsMillis}" />
+		<property name="minEvictableIdleTimeMillis" value="${jedis.minEvictableIdleTimeMillis}" />
+		<property name="softMinEvictableIdleTimeMillis" value="${jedis.softMinEvictableIdleTimeMillis}" />
+		<property name="maxWaitMillis" value="${jedis.maxWaitMillis}"/>
+		<property name="testOnBorrow" value="${jedis.testOnBorrow}" />
+		<property name="testWhileIdle" value="${jedis.testWhileIdle}"/>
+		<property name="testOnReturn" value="${jedis.testOnReturn}"/>
+		<property name="jmxEnabled" value="${jedis.jmxEnabled}"/>
+		<property name="blockWhenExhausted" value="${jedis.blockWhenExhausted}"/>
+	</bean>
+	<!--Redis自带的连接池
+	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+		<constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+		<constructor-arg name="shards">
+			<list>
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg name="host" value="${jedis.host}" />
+					<constructor-arg name="port" value="${jedis.port}" />
+					<constructor-arg name="timeout" value="${jedis.timeout}" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>-->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="${jedis.host}"/>
+		<property name="port" value="${jedis.port}"/>
+		<property name="timeout" value="${jedis.timeout}"/>
+		<property name="poolConfig" ref="jedisPoolConfig"/>
+	</bean>
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory"   ref="jedisConnectionFactory" />
+		<property name="keySerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="hashKeySerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="hashValueSerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+	</bean>
+	<bean id="javaSerializer" class="com.security.core.redis.JavaSerializer"/>
+	<!-- redis end -->
+</beans>
