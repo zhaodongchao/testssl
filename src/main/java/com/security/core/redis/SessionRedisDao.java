@@ -19,6 +19,8 @@ public class SessionRedisDao extends AbstractSessionDAO {
      * Spring提供的redis数据库操作工具类
      */
     private RedisManager redisManager ;
+
+    private String shiro_session_prefix = "shiro_session_prefix:";
     @Override
     protected Serializable doCreate(Session session) {
         Serializable sessionId = this.generateSessionId(session);
@@ -37,13 +39,13 @@ public class SessionRedisDao extends AbstractSessionDAO {
             logger.error("session id is null");
             return null;
         }
-        Session session = (Session) redisManager.get(sessionId.toString());
+        Session session = (Session) redisManager.get(shiro_session_prefix+sessionId.toString());
         return session;
     }
 
     @Override
     public void update(Session session) throws UnknownSessionException {
-        redisManager.set(session.getId().toString(), (Serializable) session);
+        redisManager.set(shiro_session_prefix+session.getId().toString(), (Serializable) session);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class SessionRedisDao extends AbstractSessionDAO {
             logger.error("session or session id is null");
             return;
         }
-        redisManager.delete(session.getId().toString());
+        redisManager.delete(shiro_session_prefix+session.getId().toString());
     }
 
     @Override
@@ -60,7 +62,7 @@ public class SessionRedisDao extends AbstractSessionDAO {
         return null;
     }
     private void saveSession(Session session) throws UnknownSessionException, IOException {
-           redisManager.set(session.getId().toString(),redisManager.getBytesFromObj(session));
+           redisManager.set(shiro_session_prefix+session.getId().toString(),redisManager.getBytesFromObj(session));
     }
 
 

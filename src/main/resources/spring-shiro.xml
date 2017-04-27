@@ -8,8 +8,8 @@
         <property name="sessionManager" ref="sessionManager"/>
         <!-- ref对应我们写的realm  MyShiro -->
         <property name="realm" ref="myJdbcRealm"/>
-        <!-- 使用下面配置的缓存管理器 -->
-        <property name="cacheManager" ref="cacheManager"/>
+        <!-- 使用下面配置的缓存管理器-->
+        <property name="cacheManager" ref="redisCacheManager"/>
     </bean>
     <bean id="loginFormFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
@@ -48,14 +48,28 @@
         <property name="cachingEnabled" value="true"/>
         <property name="authorizationCachingEnabled" value="true"/>
     </bean>
-    <!-- 用户授权信息Cache, 采用EhCache -->
+    <!-- 用户授权信息Cache, 采用EhCache
     <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
         <property name="cacheManagerConfigFile" value="classpath:ehcache/ehcache-shiro.xml"/>
     </bean>
-    <!-- sessionManager -->
+    -->
+    <bean id="redisCacheManager" class="com.security.core.redis.RedisCacheManager">
+        <property name="redisManager" ref="redisManager"/>
+    </bean>
+    <!-- sessionManager start-->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- 设置全局会话超时时间，默认20分钟(1200000) -->
         <property name="globalSessionTimeout" value="1200000" />
+        <!-- 是否在会话过期后会调用SessionDAO的delete方法删除会话 默认true -->
+        <property name="deleteInvalidSessions" value="true"/>
+        <!-- 会话验证器调度时间 -->
+        <property name="sessionValidationInterval" value="1200000" />
+        <!-- session存储的实现 -->
         <property name="sessionDAO" ref="sessionRedisDao"/>
+        <!-- sessionIdCookie的实现,用于重写覆盖容器默认的JSESSIONID -->
+        <property name="sessionIdCookie" ref="sharesession" />
+        <!-- 定时检查失效的session -->
+        <property name="sessionValidationSchedulerEnabled" value="true" />
     </bean>
     <bean id="sessionRedisDao" class="com.security.core.redis.SessionRedisDao">
         <property name="redisManager" ref="redisManager"/>
@@ -63,6 +77,16 @@
     <bean id="redisManager" class="com.security.core.redis.RedisManager"  depends-on="redisTemplate">
         <property name="redisTemplate" ref="redisTemplate"/>
     </bean>
+    <!-- sessionIdCookie的实现,用于重写覆盖容器默认的JSESSIONID -->
+    <bean id="sharesession" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <!-- cookie的name,对应的默认是 JSESSIONID -->
+        <constructor-arg name="name" value="SHAREJSESSIONID" />
+        <!-- jsessionId的path为 / 用于多个系统共享jsessionId -->
+        <property name="path" value="/" />
+        <property name="httpOnly" value="true"/>
+    </bean>
+    <!-- sessionManager end-->
+
     <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 
