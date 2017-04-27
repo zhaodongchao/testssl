@@ -65,29 +65,5 @@ public class RedisManager {
     public void setRedisTemplate(RedisTemplate<String,Serializable> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
-    public  Object readObjFromBytes(byte[] bytes)throws IOException,ClassNotFoundException {
-      //  String redStr = java.net.URLDecoder.decode(serStr, "UTF-8");
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        Object result = objectInputStream.readObject();
-        objectInputStream.close();
-        byteArrayInputStream.close();
 
-        return result;
-    }
-    public byte[] getBytesFromObj(Object obj) throws IOException {
-        byte[] bytes ;
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(obj);
-
-        bytes = byteArrayOutputStream.toByteArray();
-        //serStr = java.net.URLEncoder.encode(serStr, "UTF-8");
-
-        objectOutputStream.close();
-        byteArrayOutputStream.close();
-
-        return bytes;
-    }
 }
